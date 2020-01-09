@@ -24,12 +24,15 @@ def get_img_paths(im_dir_path):
 try:
     im_dir_path = sys.argv[1]
     save_dir_path = sys.argv[2]
+
+    print(sys.argv)
 except:
     print("error: please writing read image dir path and save dir path")
 
 # initialize
 print("======= start initililzing ==============")
 img_paths = get_img_paths(im_dir_path)
+
 detector = RetinaDetector()
 alignmentor = DanAlignmentor()
 label_j = {}
@@ -38,9 +41,13 @@ os.makedirs(save_imgs_path, exist_ok=True)
 save_json_path = os.path.join(save_dir_path, 'json')
 os.makedirs(save_json_path, exist_ok=True)
 
-for img_path in img_paths:
+for img_id, img_path in enumerate(img_paths):
+
     color_img = cv2.imread(img_path, 1)
     # DAN landmarkがgray_imageのみ受け付ける
+    if color_img is None:
+        print("img is None")
+        continue
     if len(color_img.shape) > 2:
         gray_img = np.mean(color_img, axis=2).astype(np.uint8)
     else:
@@ -79,8 +86,12 @@ for img_path in img_paths:
                 lfname = fname + ".labeled.jpg"
                 cv2.imwrite(os.path.join(save_imgs_path, lfname), color_img)
 
+    if img_id % 100 == 0:
+        print("process num: ", img_id)
+
+
 # save label json
 dname = os.path.basename(im_dir_path)
 jname = dname + ".json"
 with open(os.path.join(save_json_path, jname), "w") as f:
-    json.dump(label_j, f, indent=4)
+    json.dump(label_j, f, indent=4, ensure_ascii=False)

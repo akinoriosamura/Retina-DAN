@@ -22,7 +22,7 @@ class DanAlignmentor(object):
         landmarks, confidence = self.model.processImg(img[np.newaxis], initLandmarks)
         print("alignment conf: ", confidence)
 
-        if confidence < 0.3:
+        if confidence < 0.9:
             landmarks = None
 
         return landmarks

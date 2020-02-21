@@ -107,6 +107,6 @@ for img_id, img_path in enumerate(img_paths):
 
 
 # save label json
-jname = "segment_moru_dataset.json"
+jname = "alignment.json"
 with open(os.path.join(save_json_path, jname), "w") as f:
     json.dump(label_j, f, indent=4, ensure_ascii=False)
